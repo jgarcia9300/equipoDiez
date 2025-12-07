@@ -6,67 +6,131 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="@color/black"
         tools:context=".view.fragment.LoginFragment">
 
         <ImageView
             android:id="@+id/inventoryImage"
-            android:layout_width="200dp"
-            android:layout_height="220dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@drawable/inventory"
-            app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideLine2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="150dp"
             />
 
-        <TextView
-            android:id="@+id/inventoryText"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editEmail"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/baloo2"
-            android:gravity="center"
-            android:text="@string/inventario"
-            android:textColor="@color/inv_orange"
-            android:textSize="80sp"
-            app:layout_constraintBottom_toTopOf="@id/guideLine1"
-            app:layout_constraintTop_toBottomOf="@+id/inventoryImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:hint="Email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
 
-            />
+            app:hintTextColor="@android:color/white"
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideLine1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"
-            />
+            android:textColorHint="@android:color/white"
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideLine2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4"
-            />
+            app:boxStrokeColor="@color/white_stroke_color"
 
-
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieFingerprint"
-            android:layout_width="190dp"
-            android:layout_height="220dp"
-            app:lottie_fileName="animations/fingerprint_scan.json"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:layout_constraintTop_toBottomOf="@+id/guideLine1"
-            android:scaleType="centerCrop"
+            app:boxBackgroundColor="@android:color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/inventoryImage"
+
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editEmailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="textEmailAddress"
+                android:textCursorDrawable="@null"
+                android:maxLength="40"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editPassword"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:hint="@string/password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            app:hintTextColor="@android:color/white"
+
+            android:textColorHint="@android:color/white"
+
+            app:boxStrokeColor="@color/white_stroke_color"
+
+            app:boxBackgroundColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editEmail"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@android:color/white"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="numberPassword"
+                android:maxLength="10"
+                android:textCursorDrawable="@null"
+                app:errorEnabled="true"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnIniciarSesion"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textAllCaps="false"
+            android:background="@drawable/estilo_login"
+            app:backgroundTint="@null"
+            android:enabled="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editPassword"
+            android:layout_marginTop="30dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtRegistrarse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registrarse"
+            android:textColor="@color/white_stroke_color"
+            android:enabled="false"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnIniciarSesion"
+            android:layout_marginTop="50dp"/>
+
+
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

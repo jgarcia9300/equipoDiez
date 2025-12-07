@@ -25,4 +25,7 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="cu_nto_tengo_de_inventario">¿Cuánto tengo de inventario?</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="registrarse">Registrarse</string>
 </resources>
