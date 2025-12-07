@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -110,6 +111,13 @@ dependencies {
     //animation
     implementation ("com.airbnb.android:lottie:6.0.0")  // o la última versión disponible
 
+    //firebase
+
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    //material test
+
+    implementation ("com.google.android.material:material:1.12.0")
 
 
 
