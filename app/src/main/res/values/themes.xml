@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Miniproyecto1" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.Miniproyecto1" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
     <style name="Theme.Miniproyecto1.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
         <!-- Radius of the outer bound of widgets to make the rounded corners -->
@@ -12,6 +12,8 @@
         -->
         <item name="appWidgetInnerRadius">8dp</item>
     </style>
+
+
 
     <style name="Theme.Miniproyecto1.AppWidgetContainer" parent="Theme.Miniproyecto1.AppWidgetContainerParent">
         <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
