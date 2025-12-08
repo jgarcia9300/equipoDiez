@@ -14,4 +14,5 @@
     <color name="icon_color">#FA8523</color>
     <color name="inv_white">#FFFFFFFF</color>
     <color name="backgroundColor">#353338</color>
+    <color name="white_stroke_color">#FFFFFFFF</color>
 </resources>

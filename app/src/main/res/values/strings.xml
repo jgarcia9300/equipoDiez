@@ -28,4 +28,5 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="registrarse">Registrarse</string>
+    <string name="entrar_como_invitado">Entrar como invitado</string>
 </resources>
