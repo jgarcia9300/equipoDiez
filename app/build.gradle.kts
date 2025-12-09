@@ -71,16 +71,16 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.12.4")
     testImplementation("org.mockito:mockito-inline:3.12.4")
-    testImplementation ("org.mockito:mockito-android:3.11.2")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
-    testImplementation ("androidx.arch.core:core-testing:2.2.0")
-    debugImplementation ("org.jacoco:org.jacoco.core:0.8.7")
+    testImplementation("org.mockito:mockito-android:3.11.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    debugImplementation("org.jacoco:org.jacoco.core:0.8.7")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     //navigation
-    implementation ("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation ("androidx.navigation:navigation-ui-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-common:$navVersion")
 
     //cardView
@@ -92,33 +92,38 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     //viewmodel
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation ("androidx.activity:activity-ktx:1.8.0")
-    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx:1.8.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // LiveData
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 
     // Room
-    implementation ("androidx.room:room-runtime:2.5.2")
-    implementation ("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.room:room-runtime:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
-    implementation ("com.getbase:floatingactionbutton:1.10.1")
+    implementation("com.getbase:floatingactionbutton:1.10.1")
 
     //Biometric
-    implementation ("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.biometric:biometric:1.1.0")
 
     //animation
-    implementation ("com.airbnb.android:lottie:6.0.0")  // o la última versión disponible
-
-    //firebase
-
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.airbnb.android:lottie:6.0.0")  // o la última versión disponible
 
     //material test
 
-    implementation ("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.12.0")
+
+    //firestore:
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-firestore")
+
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+
 
 
 
 }
+
