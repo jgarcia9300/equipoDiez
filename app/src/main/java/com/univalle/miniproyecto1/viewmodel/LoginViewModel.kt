@@ -27,22 +27,28 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
-
+    fun login(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+// 1. VALIDACIÓN (Responsabilidad del ViewModel)
         if (email.isNotEmpty() && pass.isNotEmpty()) {
-            FirebaseAuth.getInstance()
-                .signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        isLogin(true)
-                    } else {
-                        isLogin(false)
-                    }
+
+            // 2. CORRUTINA (Necesaria porque el repositorio usa 'suspend')
+            viewModelScope.launch {
+
+                // 3. LLAMADA AL REPOSITORIO
+                // Le pasamos el email y pass, y esperamos la respuesta en el callback
+                repository.loginUser(email, pass) { loginExitoso ->
+
+                    // 4. RESPUESTA A LA VISTA
+                    isLogin(loginExitoso)
                 }
+            }
         } else {
+            // Si los campos están vacíos, devolvemos false inmediatamente
             isLogin(false)
         }
+
     }
+
 
    fun sesion(email: String?, isEnableView: (Boolean) -> Unit) {
         if (email != null) {

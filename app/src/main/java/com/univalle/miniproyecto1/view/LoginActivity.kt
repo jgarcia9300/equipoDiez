@@ -127,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
     private fun loginUser() {
         val email = binding.editEmailInput.text.toString()
         val pass = binding.editPasswordInput.text.toString()
-        loginViewModel.loginUser(email,pass){ isLogin ->
+        loginViewModel.login(email,pass){ isLogin ->
             if (isLogin){
                 sharedPreferences.edit().putString("email",email).apply()
                 goToHome()

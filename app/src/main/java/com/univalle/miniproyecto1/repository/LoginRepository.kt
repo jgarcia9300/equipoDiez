@@ -58,4 +58,53 @@ class LoginRepository {
         }
 
     }
+//
+//    fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+//
+//        if (email.isNotEmpty() && pass.isNotEmpty()) {
+//            FirebaseAuth.getInstance()
+//                .signInWithEmailAndPassword(email, pass)
+//                .addOnCompleteListener {
+//                    if (it.isSuccessful) {
+//                        isLogin(true)
+//                    } else {
+//                        isLogin(false)
+//                    }
+//                }
+//        } else {
+//            isLogin(false)
+//        }
+//    }
+
+    // Dentro de LoginRepository.kt
+
+// Asegúrate de tener la instancia arriba como propiedad de clase
+// private val firebaseAuth = FirebaseAuth.getInstance()
+
+    suspend fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+        withContext(Dispatchers.IO) {
+            try {
+                // Ya no validamos si está vacío aquí. Asumimos que el dato llegó bien.
+                firebaseAuth.signInWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            isLogin(true)
+                        } else {
+                            isLogin(false)
+                        }
+                    }
+                    // Es bueno agregar un listener de falla por si hay problemas de red
+                    .addOnFailureListener {
+                        isLogin(false)
+                    }
+            } catch (e: Exception) {
+                // Si ocurre un error inesperado (crash), devolvemos false para que la app no se cierre
+                isLogin(false)
+            }
+        }
+    }
+
+
+
+
 }
