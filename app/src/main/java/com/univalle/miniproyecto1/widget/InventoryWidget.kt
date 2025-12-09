@@ -9,7 +9,7 @@ import android.widget.RemoteViews
 import com.univalle.miniproyecto1.R
 import com.univalle.miniproyecto1.data.InventoryDB
 import com.univalle.miniproyecto1.view.MainActivity
-import com.univalle.miniproyecto1.view.fragment.LoginFragment
+//import com.univalle.miniproyecto1.view.fragment.LoginFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -4,10 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clContenedor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        tools:context=".view.fragment.LoginFragment">
+        tools:context=".view.LoginActivity">
 
         <ImageView
             android:id="@+id/inventoryImage"
