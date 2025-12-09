@@ -28,17 +28,15 @@ class LoginViewModel : ViewModel() {
     }
 
     fun login(email: String, pass: String, isLogin: (Boolean) -> Unit) {
-// 1. VALIDACIÓN (Responsabilidad del ViewModel)
+// validacion
         if (email.isNotEmpty() && pass.isNotEmpty()) {
 
-            // 2. CORRUTINA (Necesaria porque el repositorio usa 'suspend')
+  //corrutina
             viewModelScope.launch {
-
-                // 3. LLAMADA AL REPOSITORIO
-                // Le pasamos el email y pass, y esperamos la respuesta en el callback
+                // se pasa el email y el password y se espera respuesta
                 repository.loginUser(email, pass) { loginExitoso ->
 
-                    // 4. RESPUESTA A LA VISTA
+                    // respuesta a la vista
                     isLogin(loginExitoso)
                 }
             }
