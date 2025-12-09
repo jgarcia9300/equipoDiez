@@ -14,17 +14,15 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/inventory_widget_info" />
         </receiver>
-
-        <activity
-            android:name=".view.AddProductActivity"
-            android:exported="false" />
         <activity
             android:name=".view.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
