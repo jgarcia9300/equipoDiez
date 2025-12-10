@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.univalle.miniproyecto1"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.univalle.miniproyecto1"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -98,9 +98,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-analytics")
 
-    // --- DAGGER HILT (Inyección de Dependencias) --
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+
+    implementation("com.google.dagger:hilt-android:2.51.1") // <--- Aquí pon 2.51.1
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")   // <--- Aquí pon 2.51.1
 
 
     // implementation("androidx.room:room-runtime:2.5.2")

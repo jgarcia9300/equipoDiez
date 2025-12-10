@@ -1,4 +1,4 @@
-package com.univalle.miniproyecto1.view // Ajusta este paquete al de tu Activity
+package com.univalle.miniproyecto1.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,14 +8,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.univalle.miniproyecto1.R
-import com.univalle.miniproyecto1.databinding.FragmentLoginBinding // <--- CLASE BINDING CORREGIDA
-import com.univalle.miniproyecto1.viewmodel.LoginViewModel // <--- PAQUETE CORREGIDO
+import com.univalle.miniproyecto1.databinding.FragmentLoginBinding
+import com.univalle.miniproyecto1.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-
-    // Usamos el Binding que Data Binding generó
     private lateinit var binding: FragmentLoginBinding
 
     // Inyección del ViewModel
@@ -23,12 +21,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Inicializamos el Binding
         binding = FragmentLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Verificar si hay sesión activa al iniciar
+        // Verifica si hay sesión activa al iniciar
         viewModel.checkSession()
 
         setupListeners()
@@ -36,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Validación de campos en tiempo real
+        // Validación de campos
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -48,14 +44,14 @@ class LoginActivity : AppCompatActivity() {
         binding.editEmailInput.addTextChangedListener(textWatcher)
         binding.editPasswordInput.addTextChangedListener(textWatcher)
 
-        // Botón Login (ID: btnIniciarSesion)
+        // Botón Login
         binding.btnIniciarSesion.setOnClickListener {
             val email = binding.editEmailInput.text.toString()
             val pass = binding.editPasswordInput.text.toString()
             viewModel.login(email, pass)
         }
 
-        // Botón Registrarse (ID: txtRegistrarse)
+        // Botón Registrarse
         binding.txtRegistrarse.setOnClickListener {
             val email = binding.editEmailInput.text.toString()
             val pass = binding.editPasswordInput.text.toString()
@@ -74,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
 
         var isValid = true
 
-        // Validación Contraseña (Mínimo 6 caracteres)
+        // Validación Contraseña
         if (pass.isNotEmpty() && pass.length < 6) {
             binding.editPassword.error = "Mínimo 6 caracteres"
             isValid = false
@@ -82,14 +78,14 @@ class LoginActivity : AppCompatActivity() {
             binding.editPassword.error = null
         }
 
-        // Validación Email (no vacío)
+        // Validación Email
         if (email.isEmpty()) {
             isValid = false
         }
 
         // Habilitar Botones
         binding.btnIniciarSesion.isEnabled = isValid
-        // Lógica para cambiar color (Feedback visual)
+        // cambiar color
         val colorResource = if(isValid) resources.getColor(android.R.color.white, null) else resources.getColor(R.color.white_stroke_color, null)
         binding.txtRegistrarse.setTextColor(colorResource)
     }
@@ -117,12 +113,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Función de navegación de LoginActivity (Activity) a HomeActivity (Activity)
+    // Navegacion de login al home
     private fun navigateToHome() {
-        // *** CAMBIA MainActivity::class.java por el nombre de tu Activity Principal ***
+
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish() // Evita volver al login con el botón de atrás
+        finish()
     }
 }
 
