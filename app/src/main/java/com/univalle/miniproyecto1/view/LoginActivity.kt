@@ -1,163 +1,266 @@
-package com.univalle.miniproyecto1.view
+package com.univalle.miniproyecto1.view // Ajusta este paquete al de tu Activity
 
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
-import com.univalle.miniproyecto1.model.UserRequest
-import com.univalle.miniproyecto1.viewmodel.LoginViewModel
-import android.content.Context
-import android.content.Intent
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.univalle.miniproyecto1.R
-import com.univalle.miniproyecto1.databinding.FragmentHomeBinding
-import com.univalle.miniproyecto1.databinding.FragmentLoginBinding
-import com.univalle.miniproyecto1.view.fragment.HomeFragment
+import com.univalle.miniproyecto1.databinding.FragmentLoginBinding // <--- CLASE BINDING CORREGIDA
+import com.univalle.miniproyecto1.viewmodel.LoginViewModel // <--- PAQUETE CORREGIDO
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-
+    // Usamos el Binding que Data Binding generó
     private lateinit var binding: FragmentLoginBinding
-    private val loginViewModel: LoginViewModel by viewModels()
-    private lateinit var sharedPreferences: SharedPreferences
+
+    // Inyección del ViewModel
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.fragment_login)
-        sharedPreferences = getSharedPreferences("shared", Context.MODE_PRIVATE)
-        checkSession()
-        sesion()
-        setup()
-        viewModelObservers()
-        setupTextWatchers()
+
+        // Inicializamos el Binding
+        binding = FragmentLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 1. Verificar si hay sesión activa al iniciar
+        viewModel.checkSession()
+
+        setupListeners()
+        setupObservers()
     }
 
-//Navegar al Home
-    private fun goToHome() {
+    private fun setupListeners() {
+        // Validación de campos en tiempo real
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateInputs()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        binding.editEmailInput.addTextChangedListener(textWatcher)
+        binding.editPasswordInput.addTextChangedListener(textWatcher)
+
+        // Botón Login (ID: btnIniciarSesion)
+        binding.btnIniciarSesion.setOnClickListener {
+            val email = binding.editEmailInput.text.toString()
+            val pass = binding.editPasswordInput.text.toString()
+            viewModel.login(email, pass)
+        }
+
+        // Botón Registrarse (ID: txtRegistrarse)
+        binding.txtRegistrarse.setOnClickListener {
+            val email = binding.editEmailInput.text.toString()
+            val pass = binding.editPasswordInput.text.toString()
+
+            if (binding.btnIniciarSesion.isEnabled) {
+                viewModel.register(email, pass)
+            } else {
+                Toast.makeText(this, "Complete los campos para registrarse", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun validateInputs() {
+        val email = binding.editEmailInput.text.toString()
+        val pass = binding.editPasswordInput.text.toString()
+
+        var isValid = true
+
+        // Validación Contraseña (Mínimo 6 caracteres)
+        if (pass.isNotEmpty() && pass.length < 6) {
+            binding.editPassword.error = "Mínimo 6 caracteres"
+            isValid = false
+        } else {
+            binding.editPassword.error = null
+        }
+
+        // Validación Email (no vacío)
+        if (email.isEmpty()) {
+            isValid = false
+        }
+
+        // Habilitar Botones
+        binding.btnIniciarSesion.isEnabled = isValid
+        // Lógica para cambiar color (Feedback visual)
+        val colorResource = if(isValid) resources.getColor(android.R.color.white, null) else resources.getColor(R.color.white_stroke_color, null)
+        binding.txtRegistrarse.setTextColor(colorResource)
+    }
+
+    private fun setupObservers() {
+
+        // Observar resultado de Login/Sesión
+        viewModel.loginState.observe(this) { isSuccess ->
+            if (isSuccess) {
+                navigateToHome()
+            }
+        }
+
+        // Observar resultado de Registro
+        viewModel.registerState.observe(this) { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(this, "Registro Exitoso. Iniciando sesión...", Toast.LENGTH_LONG).show()
+                navigateToHome()
+            }
+        }
+
+        // Observar Errores
+        viewModel.errorMessage.observe(this) { msg ->
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Función de navegación de LoginActivity (Activity) a HomeActivity (Activity)
+    private fun navigateToHome() {
+        // *** CAMBIA MainActivity::class.java por el nombre de tu Activity Principal ***
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
+        finish() // Evita volver al login con el botón de atrás
     }
-
-//observador viewmodel
-    private fun viewModelObservers() {
-        loginViewModel.isRegister.observe(this) { userResponse ->
-            if (userResponse.isRegister) {
-                Toast.makeText(this, userResponse.message, Toast.LENGTH_SHORT).show()
-
-                // guardar sesión
-                sharedPreferences.edit()
-                    .putString("email", userResponse.email)
-                    .apply()
-
-                goToHome()
-            } else {
-                Toast.makeText(this, userResponse.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    //validacion contraseña
-    private fun editPassword() {
-        binding.editPasswordInput.doOnTextChanged { text, _, _, _ ->
-            if (text!!.length < 6) {
-                binding.editPassword.error = "Mínimo 6 dígitos"
-            } else {
-                binding.editPassword.error = null
-            }
-        }
-    }
-
-    //cantidad de caracteres en tiempo real
-    private fun setupTextWatchers() {
-
-        editPassword()
-
-        val watcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val email = binding.editEmailInput.text.toString()
-                val pass = binding.editPasswordInput.text.toString()
-
-                binding.btnIniciarSesion.isEnabled =
-                    email.isNotEmpty() && pass.length > 5
-
-                binding.txtRegistrarse.isEnabled =
-                    email.isNotEmpty() && pass.length > 5
-            }
-        }
-
-        binding.editEmailInput.addTextChangedListener(watcher)
-        binding.editPasswordInput.addTextChangedListener(watcher)
-    }
-
-  //listeners botones
-    private fun setup() {
-        binding.txtRegistrarse.setOnClickListener {
-            registerUser()
-        }
-
-        binding.btnIniciarSesion.setOnClickListener {
-            loginUser()
-        }
-    }
-
-    //Registro
-    private fun registerUser() {
-        val email = binding.editEmailInput.text.toString()
-        val pass = binding.editPasswordInput.text.toString()
-
-        if (email.isNotEmpty() && pass.isNotEmpty()) {
-            val userRequest = UserRequest(email, pass)
-            loginViewModel.registerUser(userRequest)
-        } else {
-            Toast.makeText(this, "Campos Vacíos", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    //Login
-    private fun loginUser() {
-        val email = binding.editEmailInput.text.toString()
-        val pass = binding.editPasswordInput.text.toString()
-        loginViewModel.login(email,pass){ isLogin ->
-            if (isLogin){
-                sharedPreferences.edit().putString("email",email).apply()
-                goToHome()
-            }else {
-                Toast.makeText(this, "Login incorrecto", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun sesion() {
-        val email = sharedPreferences.getString("email", null)
-        loginViewModel.sesion(email) { isEnableView ->
-            if (isEnableView) {
-                binding.clContenedor.visibility = View.INVISIBLE
-                goToHome()
-            }
-        }
-
-    }
-
-    private fun checkSession() {
-
-        val isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false)
-        if (isLoggedIn) {
-            goToHome()
-        }
-    }
-
 }
 
+/*
+package com.univalle.miniproyecto1.view
+
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.univalle.miniproyecto1.R
+import com.univalle.miniproyecto1.databinding.FragmentLoginBinding
+import com.univalle.miniproyecto1.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class LoginFragment : Fragment() {
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: LoginViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Verificar si hay sesión activa al iniciar
+        viewModel.checkSession()
+
+        setupListeners()
+        setupObservers()
+    }
+
+    private fun setupListeners() {
+
+        // Validación de campos
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateInputs()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        binding.editEmailInput.addTextChangedListener(textWatcher)
+        binding.editPasswordInput.addTextChangedListener(textWatcher)
+
+        // Botón Login
+        binding.btnIniciarSesion.setOnClickListener {
+            val email = binding.editEmailInput.text.toString()
+            val pass = binding.editPasswordInput.text.toString()
+            viewModel.login(email, pass)
+        }
+
+        // Botón Registrarse
+        binding.txtRegistrarse.setOnClickListener {
+            val email = binding.editEmailInput.text.toString()
+            val pass = binding.editPasswordInput.text.toString()
+
+            // Solo permite registrar si los campos son válidos
+            if (binding.btnIniciarSesion.isEnabled) {
+                viewModel.register(email, pass)
+            } else {
+                Toast.makeText(requireContext(), "Complete los campos para registrarse", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // Función de Validación
+    private fun validateInputs() {
+        val email = binding.editEmailInput.text.toString()
+        val pass = binding.editPasswordInput.text.toString()
+
+        var isValid = true
+
+        // Validación Contraseña
+        if (pass.isNotEmpty() && pass.length < 6) {
+            binding.editPassword.error = "Mínimo 6 caracteres"
+            isValid = false
+        } else {
+            binding.editPassword.error = null
+        }
+
+        // Validación Email
+        if (email.isEmpty()) {
+            isValid = false
+        }
 
 
+        // Habilitar Botón Login
+        binding.btnIniciarSesion.isEnabled = isValid
 
+        // Cambiar color texto Registrarse
+        val colorInt = if(isValid) resources.getColor(android.R.color.white, null) else resources.getColor(R.color.white_stroke_color, null)
+        binding.txtRegistrarse.setTextColor(colorInt)
+
+    }
+
+    private fun setupObservers() {
+        val navController = findNavController()
+
+        // Observar resultado de Login/Sesión
+        viewModel.loginState.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) {
+                // Navegar a Home si es exitoso
+                navController.navigate(R.id.action_loginFragment_to_homeFragment) // ASEGURA ESTA RUTA
+            }
+        }
+
+        // Observar resultado de Registro
+        viewModel.registerState.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(requireContext(), "Registro Exitoso. Iniciando sesión...", Toast.LENGTH_LONG).show()
+                navController.navigate(R.id.action_loginFragment_to_homeFragment) // ASEGURA ESTA RUTA
+            }
+        }
+
+        // Observar Errores
+        viewModel.errorMessage.observe(viewLifecycleOwner) { msg ->
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}*/
