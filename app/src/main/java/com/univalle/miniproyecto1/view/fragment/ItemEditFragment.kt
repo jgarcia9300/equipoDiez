@@ -11,6 +11,9 @@ import com.univalle.miniproyecto1.databinding.FragmentItemEditBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 
 
 class ItemEditFragment : Fragment() {

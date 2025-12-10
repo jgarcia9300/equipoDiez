@@ -19,7 +19,9 @@ import com.univalle.miniproyecto1.view.LoginActivity
 import com.univalle.miniproyecto1.view.MainActivity
 import com.univalle.miniproyecto1.view.adapter.InventoryAdapter
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding

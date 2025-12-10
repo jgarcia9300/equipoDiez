@@ -13,9 +13,9 @@ import androidx.core.widget.addTextChangedListener
 import com.univalle.miniproyecto1.databinding.FragmentAddItemBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
-
+@AndroidEntryPoint
 class AddItemFragment : Fragment() {
     private lateinit var binding: FragmentAddItemBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
