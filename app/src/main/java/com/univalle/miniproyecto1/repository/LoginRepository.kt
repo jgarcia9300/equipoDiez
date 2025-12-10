@@ -28,7 +28,7 @@ class LoginRepository {
                         } else {
                             val error = task.exception
                             if (error is FirebaseAuthUserCollisionException) {
-                                // Si ya existe un email registrado
+                                // si hay un email registrado
                                 userResponse(
                                     UserResponse(
                                         isRegister = false,
@@ -36,7 +36,7 @@ class LoginRepository {
                                     )
                                 )
                             } else {
-                                // Si hay otros errores
+                                // si existen otros errores
                                 userResponse(
                                     UserResponse(
                                         isRegister = false,
@@ -58,4 +58,41 @@ class LoginRepository {
         }
 
     }
+
+    suspend fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+        withContext(Dispatchers.IO) {
+            try {
+                // Se asume que los datos llegan correctamente
+                firebaseAuth.signInWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            isLogin(true)
+                        } else {
+                            isLogin(false)
+                        }
+                    }
+            } catch (e: Exception) {
+                // Si ocurre un error inesperado devuelve false para que la app no se cierre
+                isLogin(false)
+            }
+        }
+    }
+//
+//    fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+//
+//        if (email.isNotEmpty() && pass.isNotEmpty()) {
+//            FirebaseAuth.getInstance()
+//                .signInWithEmailAndPassword(email, pass)
+//                .addOnCompleteListener {
+//                    if (it.isSuccessful) {
+//                        isLogin(true)
+//                    } else {
+//                        isLogin(false)
+//                    }
+//                }
+//        } else {
+//            isLogin(false)
+//        }
+//    }
+
 }

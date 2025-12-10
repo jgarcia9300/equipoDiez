@@ -27,22 +27,26 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun loginUser(email: String, pass: String, isLogin: (Boolean) -> Unit) {
-
+    fun login(email: String, pass: String, isLogin: (Boolean) -> Unit) {
+// validacion
         if (email.isNotEmpty() && pass.isNotEmpty()) {
-            FirebaseAuth.getInstance()
-                .signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        isLogin(true)
-                    } else {
-                        isLogin(false)
-                    }
+
+  //corrutina
+            viewModelScope.launch {
+                // se pasa el email y el password y se espera respuesta
+                repository.loginUser(email, pass) { loginExitoso ->
+
+                    // respuesta a la vista
+                    isLogin(loginExitoso)
                 }
+            }
         } else {
+            // Si los campos están vacíos, devolvemos false inmediatamente
             isLogin(false)
         }
+
     }
+
 
    fun sesion(email: String?, isEnableView: (Boolean) -> Unit) {
         if (email != null) {
