@@ -58,6 +58,7 @@ dependencies {
 
     // --- TESTING ---
     testImplementation(libs.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -71,6 +72,7 @@ dependencies {
     testImplementation("org.mockito:mockito-android:3.11.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
     // --- UI & NAVIGATION ---
     val navVersion = "2.7.5"
