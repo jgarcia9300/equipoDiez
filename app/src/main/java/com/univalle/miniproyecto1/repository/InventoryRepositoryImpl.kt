@@ -38,7 +38,7 @@ class InventoryRepositoryImpl @Inject constructor(
         auth.signOut()
     }
 
-    // Verificamos si hay un usuario actual
+    // Verifica si hay un usuario actual
     override fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
     }
@@ -46,12 +46,12 @@ class InventoryRepositoryImpl @Inject constructor(
     // Base de datos
     override suspend fun getProducts(): List<Inventory> {
         return try {
-            // Obtenemos la colección "products"
+            // Se obtiene la lista de productos de la colección
             val snapshot = db.collection("products").get().await()
-            // Convertimos cada documento a un objeto Inventory
+            // se convierte a cada documento a un objeto Inventory
             snapshot.documents.mapNotNull { document ->
                 document.toObject(Inventory::class.java)?.apply {
-                    // Importante: Guardamos el ID del documento dentro del objeto
+                    // se guarda el id
                     id = document.id
                 }
             }
