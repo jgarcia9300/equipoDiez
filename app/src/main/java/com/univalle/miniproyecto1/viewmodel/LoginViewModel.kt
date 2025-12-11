@@ -29,7 +29,7 @@ class LoginViewModel @Inject constructor(
     fun login(email: String, pass: String) {
         if (email.isNotEmpty() && pass.isNotEmpty()) {
             viewModelScope.launch {
-                // Usamos la función del repo nuevo que conecta con Firebase
+                // función del repo nuevo que conecta con Firebase
                 val isSuccess = repository.login(email, pass)
                 if (isSuccess) {
                     _loginState.value = true

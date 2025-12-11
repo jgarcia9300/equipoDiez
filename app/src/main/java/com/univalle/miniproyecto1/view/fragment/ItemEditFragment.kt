@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding
-    // Usamos viewModels() para la inyección estándar de Hilt
+
     private val inventoryViewModel: InventoryViewModel by viewModels()
 
     private lateinit var receivedInventory: Inventory
@@ -37,10 +37,10 @@ class ItemEditFragment : Fragment() {
         configurarToolbar()
         configurarBotonEditar()
         observarCambiosCampos()
-        setupObservers() // <-- NUEVO: Escuchar confirmación de actualización
+        setupObservers()
     }
 
-    // Escuchamos al ViewModel para saber cuándo cerrar la ventana
+    // Saber cuándo cerrar la ventana
     private fun setupObservers() {
         inventoryViewModel.message.observe(viewLifecycleOwner) { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -54,10 +54,9 @@ class ItemEditFragment : Fragment() {
 
     private fun recibirDatos() {
         arguments?.let { bundle ->
-            // Asegúrate de que tu modelo Inventory sea Serializable o Parcelable
             receivedInventory = bundle.getSerializable("dataInventory") as Inventory
 
-            binding.txtIdValue.text = receivedInventory.code // Mostramos el código visualmente
+            binding.txtIdValue.text = receivedInventory.code
             binding.edtNombre.setText(receivedInventory.name)
             binding.edtPrecio.setText(receivedInventory.price.toString())
             binding.edtCantidad.setText(receivedInventory.quantity.toString())
@@ -106,8 +105,6 @@ class ItemEditFragment : Fragment() {
         val nombre = binding.edtNombre.text.toString().trim()
         val precioText = binding.edtPrecio.text.toString().trim()
         val cantidadText = binding.edtCantidad.text.toString().trim()
-
-        // --- CORRECCIÓN: Convertir a Double ---
         val precio = precioText.toDoubleOrNull()
         val cantidad = cantidadText.toIntOrNull()
 
@@ -121,14 +118,12 @@ class ItemEditFragment : Fragment() {
         }
 
         val productoActualizado = Inventory(
-            id = receivedInventory.id,     // ID de Firestore (String)
-            code = receivedInventory.code, // Código visual (String)
+            id = receivedInventory.id,
+            code = receivedInventory.code,
             name = nombre,
-            price = precio,                // Double ✔
-            quantity = cantidad            // Int ✔
+            price = precio,
+            quantity = cantidad
         )
-
-        // Llamamos al ViewModel y esperamos al Observer para salir
         inventoryViewModel.updateInventory(productoActualizado)
     }
 }

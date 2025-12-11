@@ -1,26 +1,23 @@
 package com.univalle.miniproyecto1.view.viewholder
 
-import android.os.Bundle
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.univalle.miniproyecto1.R
 import com.univalle.miniproyecto1.databinding.ItemInventoryBinding
 import com.univalle.miniproyecto1.model.Inventory
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
-class InventoryViewHolder(private val binding: ItemInventoryBinding, private val navController: NavController) :
+class InventoryViewHolder(private val binding: ItemInventoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun setItemInventory(inventory: Inventory) {
 
         binding.tvName.text = inventory.name
-        binding.tvPrice.text = "$ ${inventory.price}"
-        binding.tvQuantity.text = "${inventory.quantity}"
-
-        binding.cvInventory.setOnClickListener {
-            val bundle = Bundle().apply {
-                putSerializable("dataInventory", inventory)
-            }
-            navController.navigate(R.id.action_homeFragment_to_itemDetailsFragment, bundle)
+        binding.tvCode.text = "ID: ${inventory.code}"
+        val symbols = DecimalFormatSymbols().apply {
+            groupingSeparator = '.'
+            decimalSeparator = ','
         }
+        val decimalFormat = DecimalFormat("#,###.00", symbols)
+        binding.tvPrice.text = "$ ${decimalFormat.format(inventory.price)}"
     }
 }
