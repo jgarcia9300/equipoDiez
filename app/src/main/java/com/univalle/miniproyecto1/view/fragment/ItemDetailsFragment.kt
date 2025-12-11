@@ -5,17 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.univalle.miniproyecto1.R
 import com.univalle.miniproyecto1.databinding.FragmentItemDetailsBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ItemDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentItemDetailsBinding
-    private val inventoryViewModel: InventoryViewModel by activityViewModels()
+    private val inventoryViewModel: InventoryViewModel by viewModels()
 
     private lateinit var receivedInventory: Inventory
 
@@ -62,7 +65,7 @@ class ItemDetailsFragment : Fragment() {
         }
     }
 
-    // Función auxiliar para renderizar los datos en la UI
+
     private fun renderInventoryData(item: Inventory) {
         binding.tvItem.text = item.name
         binding.tvPrice.text = "$ ${item.price}"
@@ -89,20 +92,26 @@ class ItemDetailsFragment : Fragment() {
     }
 
     private fun observerInventoryUpdates() {
+
         inventoryViewModel.listInventory.observe(viewLifecycleOwner) { list ->
-
             val updatedItem = list.firstOrNull { it.id == receivedInventory.id }
-
             if (updatedItem != null) {
                 receivedInventory = updatedItem
                 renderInventoryData(updatedItem)
             }
         }
+
+        // Mensaje al eliminar
+        inventoryViewModel.message.observe(viewLifecycleOwner) { msg ->
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+            if (msg.contains("eliminado", ignoreCase = true)) {
+                findNavController().popBackStack()
+            }
+        }
     }
 
-
     private fun deleteInventory() {
-        inventoryViewModel.deleteInventory(receivedInventory)
-        findNavController().popBackStack()
+        inventoryViewModel.deleteInventory(receivedInventory.id)
     }
 }

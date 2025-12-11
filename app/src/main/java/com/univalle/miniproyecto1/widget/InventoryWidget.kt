@@ -5,11 +5,12 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.univalle.miniproyecto1.R
-import com.univalle.miniproyecto1.data.InventoryDB
 import com.univalle.miniproyecto1.view.LoginActivity
 import com.univalle.miniproyecto1.view.MainActivity
 import com.univalle.miniproyecto1.view.fragment.HomeFragment
@@ -17,6 +18,8 @@ import com.univalle.miniproyecto1.view.fragment.HomeFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.util.Locale
 
 private const val ACTION_TOGGLE_BALANCE = "com.univalle.miniproyecto1.TOGGLE_BALANCE"
 private const val ACTION_CONFIG_BALANCE = "com.univalle.miniproyecto1.CONFIG.BALANCE"
@@ -142,32 +145,54 @@ internal fun updateAppWidget(
     views.setOnClickPendingIntent(R.id.widget_manage_icon, pendingIntentConfig)
 
 
-//    val launchIntent = Intent(context, MainActivity::class.java).apply {
-//        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        putExtra("open_fragment", "login")
-//    }
-//
-//    val launchPendingIntent = PendingIntent.getActivity(
-//        context,
-//        111,
-//        launchIntent,
-//        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//    )
-//
-//    views.setOnClickPendingIntent(R.id.widget_manage_icon, launchPendingIntent)
-
-
     // consulta en base de datos
-    CoroutineScope(Dispatchers.IO).launch {
-        val db = InventoryDB.getDatabase(context)
-        val total = db.inventoryDao().getInventoryTotalBalance() ?: 0.0
 
+    CoroutineScope(Dispatchers.IO).launch {
+
+        // 1. Obtener el ID del usuario logueado
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        var totalInventory = 0.0 // Inicializar el balance
+
+        // verificación de login para asegurar que la consulta solo se ejecute si hay usuario.
+        if (userId != null) {
+            try {
+                // 2. Acceder a la colección de productos.
+
+                val inventorySnapshot = FirebaseFirestore.getInstance()
+                    .collection("products")
+                    .get()
+                    .await() // Espera el resultado de forma suspensiva
+
+                // 3. Iterar sobre los documentos y sumar el valor (precio * cantidad)
+                for (document in inventorySnapshot.documents) {
+
+                    // Los campos de la base de datos son 'price' (Double) y 'quantity' (Long/Int)
+                    val price = document.getDouble("price") ?: 0.0
+                    val quantityLong = document.getLong("quantity") ?: 0L // Obtener como Long
+                    val quantity = quantityLong.toDouble() // Convertir a Double para el cálculo
+
+                    // Calcular el valor del stock de ese producto y sumarlo al total
+                    totalInventory += (price * quantity)
+                }
+
+            } catch (e: Exception) {
+                // Manejar errores de conexión o permisos
+                Log.e("InventoryWidget", "Error al leer datos de Firebase: ${e.message}")
+                totalInventory = 0.0 // Mostrar 0.0 o un valor seguro en caso de error
+            }
+        } else {
+            // Usuario no logueado: totalInventory sigue siendo 0.0
+        }
+
+        // 4. Formatear y Mostrar el resultado (dentro de la Coroutine)
         val displayBalance =
-            if (showBalance) "$ %.2f".format(total)
+            if (showBalance) "$ %.2f".format(Locale.US, totalInventory)
             else "$****"
 
+        // Actualizar la vista remota con el balance calculado
         views.setTextViewText(R.id.widget_inventory_balance, displayBalance)
 
+        // 5. Notificar al sistema que el widget ha cambiado
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 }
