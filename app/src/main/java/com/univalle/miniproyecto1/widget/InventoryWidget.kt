@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.NumberFormat
 import java.util.Locale
 
 private const val ACTION_TOGGLE_BALANCE = "com.univalle.miniproyecto1.TOGGLE_BALANCE"
@@ -185,8 +186,14 @@ internal fun updateAppWidget(
         }
 
         // 4. Formatear y Mostrar el resultado (dentro de la Coroutine)
+
+        val formatter = NumberFormat.getNumberInstance(Locale.GERMANY)
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+
         val displayBalance =
-            if (showBalance) "$ %.2f".format(Locale.US, totalInventory)
+
+            if(showBalance) "$ ${formatter.format(totalInventory)}"
             else "$****"
 
         // Actualizar la vista remota con el balance calculado
