@@ -50,7 +50,7 @@ class AddItemFragment : Fragment() {
             // Mensaje de exito y error
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 
-            // Si el mensaje sugiere éxito, cerramos la pantalla
+            // Si el mensaje sugiere éxito se cierra la pantalla
             if (msg.contains("guardado", ignoreCase = true)) {
                 findNavController().popBackStack()
             }

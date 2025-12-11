@@ -83,11 +83,11 @@ class LoginActivity : AppCompatActivity() {
             isValid = false
         }
 
-        // Habilitar Botones
         binding.btnIniciarSesion.isEnabled = isValid
-        // cambiar color
-        val colorResource = if(isValid) resources.getColor(android.R.color.white, null) else resources.getColor(R.color.white_stroke_color, null)
-        binding.txtRegistrarse.setTextColor(colorResource)
+        binding.txtRegistrarse.isEnabled = isValid
+
+        val colorResource = if(isValid) android.R.color.white else R.color.white_stroke_color
+        binding.txtRegistrarse.setTextColor(resources.getColor(colorResource, null))
     }
 
     private fun setupObservers() {
