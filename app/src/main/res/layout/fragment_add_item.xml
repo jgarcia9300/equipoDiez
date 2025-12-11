@@ -131,6 +131,9 @@
             android:text="@string/guardar"
             android:enabled="false"
             android:background="@drawable/bg_redondo"
+
+            app:backgroundTint="#FA8523"
+
             app:layout_constraintTop_toBottomOf="@+id/etQuantity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

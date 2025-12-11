@@ -9,6 +9,7 @@ import com.univalle.miniproyecto1.databinding.ItemInventoryBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.view.viewholder.InventoryViewHolder
 
+
 class InventoryAdapter(
     private var listInventory: List<Inventory>,
     private val navController: NavController

@@ -134,11 +134,13 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="40dp"
             android:layout_marginStart="40dp"
-            android:background="@drawable/bg_redondo"
             android:text="@string/eliminar"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textColor="@color/inv_white"
+            android:background="@drawable/bg_redondo"
+
+            app:backgroundTint="@color/inv_orange"
 
             app:layout_constraintTop_toBottomOf="@+id/cvInventory"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,25 @@
 package com.univalle.miniproyecto1.repository
 
+import com.univalle.miniproyecto1.model.Inventory
+
+
+interface InventoryRepository {
+    // Auth
+    suspend fun login(email: String, pass: String): Boolean
+    suspend fun register(email: String, pass: String): Boolean
+    fun logout()
+    fun isUserLoggedIn(): Boolean
+
+    // Database
+    suspend fun getProducts(): List<Inventory>
+    suspend fun addProduct(product: Inventory)
+    suspend fun updateProduct(product: Inventory)
+    suspend fun deleteProduct(productId: String)
+}
+
+/*
+package com.univalle.miniproyecto1.repository
+
 import android.content.Context
 import com.univalle.miniproyecto1.data.InventoryDao
 import com.univalle.miniproyecto1.data.InventoryDB
@@ -48,4 +68,4 @@ class InventoryRepository(context: Context) {
             result ?: 0.0 // si es null (tabla vacía), devolver 0
         }
     }
-}
+}*/

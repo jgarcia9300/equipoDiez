@@ -5,18 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.univalle.miniproyecto1.databinding.FragmentItemEditBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
-import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding
-    private val inventoryViewModel: InventoryViewModel by activityViewModels()
+
+    private val inventoryViewModel: InventoryViewModel by viewModels()
 
     private lateinit var receivedInventory: Inventory
 
@@ -35,13 +37,26 @@ class ItemEditFragment : Fragment() {
         configurarToolbar()
         configurarBotonEditar()
         observarCambiosCampos()
+        setupObservers()
+    }
+
+    // Saber cuándo cerrar la ventana
+    private fun setupObservers() {
+        inventoryViewModel.message.observe(viewLifecycleOwner) { msg ->
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+            // Si el mensaje indica éxito, volvemos atrás
+            if (msg.contains("actualizado", ignoreCase = true)) {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun recibirDatos() {
         arguments?.let { bundle ->
             receivedInventory = bundle.getSerializable("dataInventory") as Inventory
 
-            binding.txtIdValue.text = receivedInventory.id.toString()
+            binding.txtIdValue.text = receivedInventory.code
             binding.edtNombre.setText(receivedInventory.name)
             binding.edtPrecio.setText(receivedInventory.price.toString())
             binding.edtCantidad.setText(receivedInventory.quantity.toString())
@@ -90,8 +105,7 @@ class ItemEditFragment : Fragment() {
         val nombre = binding.edtNombre.text.toString().trim()
         val precioText = binding.edtPrecio.text.toString().trim()
         val cantidadText = binding.edtCantidad.text.toString().trim()
-
-        val precio = precioText.toIntOrNull()
+        val precio = precioText.toDoubleOrNull()
         val cantidad = cantidadText.toIntOrNull()
 
         if (precio == null) {
@@ -103,18 +117,13 @@ class ItemEditFragment : Fragment() {
             return
         }
 
-
         val productoActualizado = Inventory(
             id = receivedInventory.id,
-            code = receivedInventory.code,   // STRING ✔
+            code = receivedInventory.code,
             name = nombre,
-            price = precio,                  // INT ✔
-            quantity = cantidad              // INT ✔
+            price = precio,
+            quantity = cantidad
         )
-
         inventoryViewModel.updateInventory(productoActualizado)
-        inventoryViewModel.getListInventory()
-
-        findNavController().popBackStack()
     }
 }
