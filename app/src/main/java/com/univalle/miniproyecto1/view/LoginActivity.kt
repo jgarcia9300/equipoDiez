@@ -131,6 +131,8 @@ class LoginActivity : AppCompatActivity() {
             if (isLogin){
                 sharedPreferences.edit().putString("email",email).apply()
                 goToHome()
+
+
             }else {
                 Toast.makeText(this, "Login incorrecto", Toast.LENGTH_SHORT).show()
             }
@@ -155,6 +157,9 @@ class LoginActivity : AppCompatActivity() {
             goToHome()
         }
     }
+
+
+
 
 }
 

@@ -6,15 +6,20 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.univalle.miniproyecto1.R
 import com.univalle.miniproyecto1.data.InventoryDB
+import com.univalle.miniproyecto1.view.LoginActivity
 import com.univalle.miniproyecto1.view.MainActivity
+import com.univalle.miniproyecto1.view.fragment.HomeFragment
 //import com.univalle.miniproyecto1.view.fragment.LoginFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val ACTION_TOGGLE_BALANCE = "com.univalle.miniproyecto1.TOGGLE_BALANCE"
+private const val ACTION_CONFIG_BALANCE = "com.univalle.miniproyecto1.CONFIG.BALANCE"
 
 class InventoryWidget : AppWidgetProvider() {
 
@@ -22,9 +27,59 @@ class InventoryWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
 
         if (intent.action == ACTION_TOGGLE_BALANCE) {
+
+            // 🔹 1. Verificar si el usuario está logueado en Firebase
+            val isLoggedIn = FirebaseAuth.getInstance().currentUser != null
+
+            if (!isLoggedIn) {
+                // Usuario NO logueado → mostrar aviso
+                Toast.makeText(context, "Debes iniciar sesión para ver esta información", Toast.LENGTH_SHORT).show()
+
+                // Opcional: abrir LoginActivity
+                val loginIntent = Intent(context, LoginActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(loginIntent)
+
+                return  // Evita que toggleBalance se ejecute
+            }
+
+            // 🔹 2. Obtener ID del widget
             val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+
+            // 🔹 3. Ejecutar acción solo si el ID es válido
             if (appWidgetId != -1) {
                 toggleBalance(context, appWidgetId)
+            }
+        }
+
+        if (intent.action == ACTION_CONFIG_BALANCE) {
+
+            // 🔹 1. Verificar si el usuario está logueado en Firebase
+            val isLoggedIn = FirebaseAuth.getInstance().currentUser != null
+
+            if (!isLoggedIn) {
+                // Usuario NO logueado → mostrar aviso
+                Toast.makeText(context, "Debes iniciar sesión para ver esta información", Toast.LENGTH_SHORT).show()
+
+                // Opcional: abrir LoginActivity
+                val loginIntent = Intent(context, LoginActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(loginIntent)
+
+                return  // Evita que toggleBalance se ejecute
+            }
+
+            // 🔹 2. Obtener ID del widget
+            val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+
+            // 🔹 3. Ejecutar acción solo si el ID es válido
+            if (appWidgetId != -1) {
+                val homeIntent = Intent(context, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(homeIntent)
             }
         }
     }
@@ -72,20 +127,34 @@ internal fun updateAppWidget(
 
 
     // icono configuracion
-
-    val launchIntent = Intent(context, MainActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        putExtra("open_fragment", "login")
+    val intentConfig = Intent(context, InventoryWidget::class.java).apply {
+        action = ACTION_CONFIG_BALANCE
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
 
-    val launchPendingIntent = PendingIntent.getActivity(
+    val pendingIntentConfig = PendingIntent.getBroadcast(
         context,
-        111,
-        launchIntent,
+        appWidgetId,
+        intentConfig,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    views.setOnClickPendingIntent(R.id.widget_manage_icon, launchPendingIntent)
+    views.setOnClickPendingIntent(R.id.widget_manage_icon, pendingIntentConfig)
+
+
+//    val launchIntent = Intent(context, MainActivity::class.java).apply {
+//        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        putExtra("open_fragment", "login")
+//    }
+//
+//    val launchPendingIntent = PendingIntent.getActivity(
+//        context,
+//        111,
+//        launchIntent,
+//        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//    )
+//
+//    views.setOnClickPendingIntent(R.id.widget_manage_icon, launchPendingIntent)
 
 
     // consulta en base de datos
