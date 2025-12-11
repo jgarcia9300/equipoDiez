@@ -6,22 +6,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
-import com.univalle.miniproyecto1.model.UserRequest
-import com.univalle.miniproyecto1.viewmodel.LoginViewModel
-import android.content.Context
-import android.content.Intent
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import android.content.Context
+import android.content.Intent
+import android.view.View
 import com.univalle.miniproyecto1.R
-import com.univalle.miniproyecto1.databinding.FragmentHomeBinding
 import com.univalle.miniproyecto1.databinding.FragmentLoginBinding
-import com.univalle.miniproyecto1.view.fragment.HomeFragment
+import com.univalle.miniproyecto1.model.UserRequest
+import com.univalle.miniproyecto1.viewmodel.LoginViewModel
 
 class LoginActivity : AppCompatActivity() {
-
 
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
@@ -29,8 +25,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_login)
         sharedPreferences = getSharedPreferences("shared", Context.MODE_PRIVATE)
+
         checkSession()
         sesion()
         setup()
@@ -38,21 +36,22 @@ class LoginActivity : AppCompatActivity() {
         setupTextWatchers()
     }
 
-//Navegar al Home
+
     private fun goToHome() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-//observador viewmodel
+
     private fun viewModelObservers() {
         loginViewModel.isRegister.observe(this) { userResponse ->
             if (userResponse.isRegister) {
                 Toast.makeText(this, userResponse.message, Toast.LENGTH_SHORT).show()
 
-                // guardar sesión
+                // Guardar sesión al registrarse
                 sharedPreferences.edit()
+                    .putBoolean("is_logged_in", true)
                     .putString("email", userResponse.email)
                     .apply()
 
@@ -63,7 +62,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //validacion contraseña
     private fun editPassword() {
         binding.editPasswordInput.doOnTextChanged { text, _, _, _ ->
             if (text!!.length < 6) {
@@ -74,24 +72,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //cantidad de caracteres en tiempo real
-    private fun setupTextWatchers() {
 
+    private fun setupTextWatchers() {
         editPassword()
 
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 val email = binding.editEmailInput.text.toString()
                 val pass = binding.editPasswordInput.text.toString()
 
-                binding.btnIniciarSesion.isEnabled =
-                    email.isNotEmpty() && pass.length > 5
-
-                binding.txtRegistrarse.isEnabled =
-                    email.isNotEmpty() && pass.length > 5
+                binding.btnIniciarSesion.isEnabled = email.isNotEmpty() && pass.length > 5
+                binding.txtRegistrarse.isEnabled = email.isNotEmpty() && pass.length > 5
             }
         }
 
@@ -99,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
         binding.editPasswordInput.addTextChangedListener(watcher)
     }
 
-  //listeners botones
+
     private fun setup() {
         binding.txtRegistrarse.setOnClickListener {
             registerUser()
@@ -110,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //Registro
+
     private fun registerUser() {
         val email = binding.editEmailInput.text.toString()
         val pass = binding.editPasswordInput.text.toString()
@@ -123,19 +116,27 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //Login
+    // Login
     private fun loginUser() {
         val email = binding.editEmailInput.text.toString()
         val pass = binding.editPasswordInput.text.toString()
-        loginViewModel.login(email,pass){ isLogin ->
-            if (isLogin){
-                sharedPreferences.edit().putString("email",email).apply()
+
+        loginViewModel.login(email, pass) { isLogin ->
+            if (isLogin) {
+
+
+                sharedPreferences.edit()
+                    .putBoolean("is_logged_in", true)
+                    .putString("email", email)
+                    .apply()
+
                 goToHome()
-            }else {
+            } else {
                 Toast.makeText(this, "Login incorrecto", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun sesion() {
         val email = sharedPreferences.getString("email", null)
@@ -145,19 +146,17 @@ class LoginActivity : AppCompatActivity() {
                 goToHome()
             }
         }
-
     }
 
-    private fun checkSession() {
 
+    private fun checkSession() {
         val isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false)
+
         if (isLoggedIn) {
             goToHome()
         }
     }
-
 }
-
 
 
 
