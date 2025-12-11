@@ -24,7 +24,7 @@ class InventoryAdapter(
             parent,
             false
         )
-        return InventoryViewHolder(binding, navController)
+        return InventoryViewHolder(binding)
     }
 
     override fun getItemCount(): Int = listInventory.size
