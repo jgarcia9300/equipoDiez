@@ -3,7 +3,7 @@
     style="@style/Widget.Miniproyecto1.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#CC000000"
+    android:background="@drawable/widget_background"
     android:padding="8dp"
     android:layout_margin="6dp"
     android:theme="@style/Theme.Miniproyecto1.AppWidgetContainer"
