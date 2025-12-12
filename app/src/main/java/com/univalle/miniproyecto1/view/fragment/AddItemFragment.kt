@@ -1,6 +1,7 @@
 package com.univalle.miniproyecto1.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -58,14 +59,31 @@ class AddItemFragment : Fragment() {
     }
 
     private fun saveInvetory(){
-        val codigo = binding.etCodigo.text.toString()
-        val name = binding.etName.text.toString()
-        val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
-        val quantity = binding.etQuantity.text.toString().toIntOrNull() ?: 0
+        val codigo = binding.etCodigo.text.toString().trim()
+        val name = binding.etName.text.toString().trim()
+        val priceText = binding.etPrice.text.toString().trim()
+        val quantityText = binding.etQuantity.text.toString().trim()
+
+        val price = priceText.toDoubleOrNull()
+        val quantity = quantityText.toIntOrNull()
+
+        if (price == null) {
+            binding.tilPrice.error = "Precio inválido"
+            return
+        }
+        if (quantity == null) {
+            binding.tilQuantity.error = "Cantidad inválida"
+            return
+        }
+
+        // Limpiar errores si la validación es exitosa
+        binding.tilPrice.error = null
+        binding.tilQuantity.error = null
 
         val inventory = Inventory(code = codigo, name = name, price = price, quantity = quantity)
 
         inventoryViewModel.saveInventory(inventory)
+        Log.d("AddItemFragment", "Producto guardado: ${inventory.toString()}")
     }
 
     private fun validarDatos() {
@@ -73,8 +91,8 @@ class AddItemFragment : Fragment() {
 
         for (editText in listEditText) {
             editText.addTextChangedListener {
-                val isListFull = listEditText.all{
-                    it.text.isNotEmpty()
+                val isListFull = listEditText.all { editText ->
+                    editText.text.toString().trim().isNotEmpty()
                 }
                 binding.btnSaveInventory.isEnabled = isListFull
             }

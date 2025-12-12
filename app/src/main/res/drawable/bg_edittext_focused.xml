@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Estado cuando está enfocado -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp"/>
+            <stroke android:color="@color/inv_white" android:width="2dp"/>
+        </shape>
+    </item>
+    <!-- Estado normal -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp"/>
+            <stroke android:color="@color/inv_white" android:width="1dp"/>
+        </shape>
+    </item>
+</selector>
+

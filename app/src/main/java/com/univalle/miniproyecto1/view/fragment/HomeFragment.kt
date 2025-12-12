@@ -39,9 +39,10 @@ class HomeFragment : Fragment() {
         observadorViewModel()
     }
 
-    // recargar la lista
     override fun onResume() {
         super.onResume()
+        // Refrescar la lista cuando el fragment se vuelve visible
+        // Esto asegura que se muestren los productos recién agregados
         inventoryViewModel.getListInventory()
     }
 
