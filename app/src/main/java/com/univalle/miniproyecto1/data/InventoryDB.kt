@@ -1,3 +1,4 @@
+/*
 package com.univalle.miniproyecto1.data
 
 import android.content.Context
@@ -23,3 +24,4 @@ abstract class InventoryDB : RoomDatabase() {
         }
     }
 }
+*/

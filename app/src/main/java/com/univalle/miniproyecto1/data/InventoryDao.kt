@@ -1,3 +1,4 @@
+/*
 package com.univalle.miniproyecto1.data
 
 import androidx.room.Dao
@@ -27,3 +28,4 @@ interface InventoryDao {
     @Query("SELECT SUM(price * quantity) FROM Inventory")
     suspend fun getInventoryTotalBalance(): Double?
 }
+*/
