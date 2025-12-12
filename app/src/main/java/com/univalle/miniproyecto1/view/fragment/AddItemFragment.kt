@@ -13,9 +13,9 @@ import androidx.core.widget.addTextChangedListener
 import com.univalle.miniproyecto1.databinding.FragmentAddItemBinding
 import com.univalle.miniproyecto1.model.Inventory
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
-
+@AndroidEntryPoint
 class AddItemFragment : Fragment() {
     private lateinit var binding: FragmentAddItemBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
@@ -32,6 +32,7 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         controladores()
+        setupObservers()
     }
 
     private fun controladores() {
@@ -41,6 +42,19 @@ class AddItemFragment : Fragment() {
         }
         binding.contentToolbar2.toolbarCreateItem.setNavigationOnClickListener{
             findNavController().popBackStack()
+        }
+    }
+
+    // Observar cambios del ViewModel
+    private fun setupObservers() {
+        inventoryViewModel.message.observe(viewLifecycleOwner) { msg ->
+            // Mensaje de exito y error
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+            // Si el mensaje sugiere éxito se cierra la pantalla
+            if (msg.contains("guardado", ignoreCase = true)) {
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -83,5 +97,4 @@ class AddItemFragment : Fragment() {
             }
         }
     }
-
 }
