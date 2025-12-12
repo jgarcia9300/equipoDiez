@@ -64,24 +64,25 @@ class AddItemFragment : Fragment() {
         val priceText = binding.etPrice.text.toString().trim()
         val quantityText = binding.etQuantity.text.toString().trim()
 
-        val price = priceText.toIntOrNull()
+        val price = priceText.toDoubleOrNull()
         val quantity = quantityText.toIntOrNull()
 
         if (price == null) {
-            Toast.makeText(context, "Precio inválido", Toast.LENGTH_SHORT).show()
+            binding.tilPrice.error = "Precio inválido"
             return
         }
         if (quantity == null) {
-            Toast.makeText(context, "Cantidad inválida", Toast.LENGTH_SHORT).show()
+            binding.tilQuantity.error = "Cantidad inválida"
             return
         }
 
+        // Limpiar errores si la validación es exitosa
+        binding.tilPrice.error = null
+        binding.tilQuantity.error = null
+
         val inventory = Inventory(code = codigo, name = name, price = price, quantity = quantity)
 
-        inventoryViewModel.saveInventory(inventory) { message ->
-            Toast.makeText(context, "Artículo guardado !!", Toast.LENGTH_SHORT).show()
-            findNavController().popBackStack()
-        }
+        inventoryViewModel.saveInventory(inventory)
         Log.d("AddItemFragment", "Producto guardado: ${inventory.toString()}")
     }
 
