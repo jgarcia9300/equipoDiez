@@ -74,7 +74,7 @@ class AddItemFragment : Fragment() {
         for (editText in listEditText) {
             editText.addTextChangedListener {
                 val isListFull = listEditText.all{
-                    it.text.isNotEmpty()
+                    it.text!!.isNotEmpty()
                 }
                 binding.btnSaveInventory.isEnabled = isListFull
             }
