@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
+    <color name="orange">#FF3000</color>
     <color name="inv_black_80">#CC000000</color>
     <color name="inv_gray_toolbar">#424242</color>
     <color name="inv_orange">#E7522E</color>

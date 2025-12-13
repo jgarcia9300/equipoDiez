@@ -12,115 +12,138 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/inv_black_80"
+
+        android:background="#CC000000"
+
         tools:context=".view.fragment.AddItemFragment"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <include
             android:id="@+id/contentToolbar2"
             layout="@layout/toolbar_create_item"/>
 
-
-        <EditText
-            android:id="@+id/etCodigo"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCodigo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-
             android:layout_marginTop="52dp"
+            android:hint="Código producto"
 
-            android:layout_gravity="center"
-            android:textColor="@color/inv_white"
 
-            android:textColorHint="@color/inv_white"
 
-            android:hint="@string/c_digo_producto"
-            android:background="@drawable/bg_redondo2"
-            android:padding="18dp"
-            android:inputType="text"
-            android:maxLength="10"
+            app:boxStrokeColor="@color/white_stroke_color"
+            android:textColorHint="@android:color/white"
+            app:hintTextColor="@android:color/white"
 
             app:layout_constraintTop_toBottomOf="@id/contentToolbar2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="number"
+                android:textCursorDrawable="@null"
+                android:maxLength="4" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <EditText
-            android:id="@+id/etName"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-
             android:layout_marginTop="20dp"
+            android:hint="Nombre artículo"
 
-            android:layout_gravity="center"
-            android:textColor="@color/inv_white"
 
-            android:textColorHint="@color/inv_white"
+            app:boxStrokeColor="@color/white_stroke_color"
+            android:textColorHint="@android:color/white"
+            app:hintTextColor="@android:color/white"
 
-            android:hint="@string/nombre_art_culo"
-            android:background="@drawable/bg_redondo2"
-            android:padding="18dp"
-            android:inputType="text"
-            android:maxLength="10"
-
-            app:layout_constraintTop_toBottomOf="@id/etCodigo"
+            app:layout_constraintTop_toBottomOf="@id/tilCodigo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="text"
+                android:textCursorDrawable="@null"
+                android:maxLength="40" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <EditText
-            android:id="@+id/etPrice"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPrice"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-
             android:layout_marginTop="20dp"
+            android:hint="Precio"
 
-            android:layout_gravity="center"
 
-            android:textColorHint="@color/inv_white"
-            android:textColor="@color/inv_white"
+            app:boxStrokeColor="@color/white_stroke_color"
+            android:textColorHint="@android:color/white"
+            app:hintTextColor="@android:color/white"
 
-            android:hint="@string/precio"
-            android:background="@drawable/bg_redondo2"
-            android:padding="18dp"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/etName"
+            app:layout_constraintTop_toBottomOf="@id/tilName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
-            android:id="@+id/etQuantity"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="number"
+                android:textCursorDrawable="@null"
+                android:maxLength="20" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilQuantity"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-
             android:layout_marginTop="20dp"
+            android:hint="Cantidad"
 
-            android:layout_gravity="center"
 
-            android:textColorHint="@color/inv_white"
-            android:textColor="@color/inv_white"
+            app:boxStrokeColor="@color/white_stroke_color"
+            android:textColorHint="@android:color/white"
+            app:hintTextColor="@android:color/white"
 
-            android:hint="@string/cantidad"
-            android:background="@drawable/bg_redondo2"
-            android:padding="18dp"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/etPrice"
+            app:layout_constraintTop_toBottomOf="@id/tilPrice"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:inputType="number"
+                android:textCursorDrawable="@null"
+                android:maxLength="4" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveInventory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,9 +152,12 @@
             android:layout_marginEnd="16dp"
 
             android:text="@string/guardar"
+            android:textAllCaps="false"
+            android:background="@drawable/estilo_login"
+            app:backgroundTint="@null"
             android:enabled="false"
-            android:background="@drawable/bg_redondo"
-            app:layout_constraintTop_toBottomOf="@+id/etQuantity"
+
+            app:layout_constraintTop_toBottomOf="@id/tilQuantity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

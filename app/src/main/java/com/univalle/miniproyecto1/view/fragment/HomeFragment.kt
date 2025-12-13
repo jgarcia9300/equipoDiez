@@ -1,5 +1,7 @@
 package com.univalle.miniproyecto1.view.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.univalle.miniproyecto1.R
 import com.univalle.miniproyecto1.databinding.FragmentHomeBinding
+import com.univalle.miniproyecto1.view.LoginActivity
 import com.univalle.miniproyecto1.view.adapter.InventoryAdapter
 import com.univalle.miniproyecto1.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    // Usamos viewModels() aquí para asociar el ViewModel al Fragment
     private val inventoryViewModel: InventoryViewModel by viewModels()
 
     override fun onCreateView(
@@ -31,9 +35,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         controladores()
         observadorViewModel()
+    }
+
+    // recargar la lista
+    override fun onResume() {
+        super.onResume()
+        inventoryViewModel.getListInventory()
     }
 
     private fun controladores() {
@@ -42,24 +51,34 @@ class HomeFragment : Fragment() {
         }
 
         binding.contentToolbar.imageToolbarHome.setOnClickListener {
-            findNavController().popBackStack()
+            // Limpiar SharedPreferences
+            val sharedPreferences = requireActivity().getSharedPreferences("shared", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.clear()
+            editor.apply()
+
+            // Cerrar sesión en Firebase
+            inventoryViewModel.signOut()
+
+            // Navegar al Login
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            requireActivity().finish()
         }
     }
 
     private fun observadorViewModel() {
-        observerListInventory()
-        observerProgress()
-    }
-
-    private fun observerListInventory() {
-        inventoryViewModel.getListInventory()
-
+        // Inicializar RecyclerView
         val recycler = binding.recyclerview
-        val layoutManager =LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
         recycler.layoutManager = layoutManager
-        val adapter = InventoryAdapter(emptyList(), findNavController()) // Inicializamos con lista vacía
+
+        // Adapter con lista vacia
+        val adapter = InventoryAdapter(emptyList(), findNavController())
         recycler.adapter = adapter
 
+        // Configurar clic en ítem
         adapter.onClickItem = { producto ->
             val bundle = Bundle()
             bundle.putSerializable("dataInventory", producto)
@@ -69,12 +88,12 @@ class HomeFragment : Fragment() {
             )
         }
 
+        // Observar datos del ViewModel
         inventoryViewModel.listInventory.observe(viewLifecycleOwner){ listInventory ->
             adapter.updateList(listInventory)
         }
-    }
 
-    private fun observerProgress() {
+        // Observar barra de carga
         inventoryViewModel.progresState.observe(viewLifecycleOwner) { status ->
             binding.progress.isVisible = status
         }
